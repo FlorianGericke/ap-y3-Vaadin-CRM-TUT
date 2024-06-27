@@ -1,9 +1,11 @@
 package com.example.application.views;
 
+import com.example.application.security.SecurityService;
 import com.example.application.views.list.DashBoardView;
 import com.example.application.views.list.ListView;
 import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.applayout.DrawerToggle;
+import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
@@ -14,7 +16,10 @@ import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.RouterLink;
 
 public class MainLayout extends AppLayout {
-    public MainLayout() {
+    private final SecurityService securityService;
+
+    public MainLayout(SecurityService securityService) {
+        this.securityService = securityService;
         createHeader();
         createDrawer();
     }
@@ -23,7 +28,15 @@ public class MainLayout extends AppLayout {
         var logo = new H1("Vaadin CRM");
         logo.addClassNames("text-l", "m-m");
 
-        var header = new HorizontalLayout(new DrawerToggle(), logo);
+        var logoutButton = new Button("Logout",
+                e -> securityService.logout()
+        );
+
+        var header = new HorizontalLayout(
+                new DrawerToggle(),
+                logo,
+                logoutButton
+        );
 
         header.setDefaultVerticalComponentAlignment(FlexComponent.Alignment.CENTER);
         header.expand(logo);
